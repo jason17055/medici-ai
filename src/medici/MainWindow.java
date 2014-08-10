@@ -26,6 +26,10 @@ public class MainWindow extends JFrame
 
 		actionPane.add(new JLabel("Enter Bid:"));
 		bidEntry.setPreferredSize(new Dimension(100,40));
+		bidEntry.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				onBidClicked();
+			}});
 		actionPane.add(bidEntry);
 
 		JButton b1 = new JButton("Bid");
@@ -46,21 +50,30 @@ public class MainWindow extends JFrame
 		String s = bidEntry.getText();
 		try {
 			int bid = Integer.parseInt(s);
+			G.makeBid(bid);
 		}
 		catch (NumberFormatException e) {
 			e.printStackTrace(System.err);
 		}
+
+		bidEntry.setText("");
+		bidEntry.requestFocusInWindow();
+		reloadGame();
 	}
 
 	public void setGame(MediciGame game)
 	{
 		this.G = game;
+		reloadGame();
+	}
 
+	void reloadGame()
+	{
 		currentLotLbl.setText(
 			String.format("Current: %s", G.getCurrentLot().toString())
 			);
 		scoreLbl.setText(
-			String.format("Your score: %d", 0)
+			String.format("Your score: %d", G.seats[0].florins)
 			);
 	}
 }

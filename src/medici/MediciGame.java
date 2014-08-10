@@ -8,7 +8,10 @@ public class MediciGame
 	List<Card> cardSupply;
 	Seat[] seats;
 	Card current;
+	int activePlayer;
+	int activeBidder;
 
+	static final int PASSING_BID = Integer.MIN_VALUE;
 	public MediciGame()
 	{
 	}
@@ -22,7 +25,7 @@ public class MediciGame
 	{
 		C = new GameConfig();
 		C.R = new Random(seed);
-		C.playerCount = 6;
+		C.playerCount = 1;
 		C.playerNames = new String[] {
 			"player1", "player2", "player3",
 			"player4", "player5", "player6"
@@ -52,9 +55,61 @@ public class MediciGame
 		seats = new Seat[C.playerCount];
 		for (int i = 0; i < C.playerCount; i++) {
 			seats[i] = new Seat();
+			seats[i].florins = 40;
 		}
 
-		this.current = cardSupply.remove(0);
+		nextAuction();
+	}
+
+	void nextAuction()
+	{
+		this.current = cardSupply.remove(cardSupply.size()-1);
+	}
+
+	void makeBid(int bidAmount)
+	{
+		seats[activeBidder].bid = bidAmount;
+
+		if (activeBidder == activePlayer) {
+			doEndOfAuction();
+		}
+		else {
+			activeBidder = playerAfter(activeBidder);
+		}
+	}
+
+	int playerAfter(int pid, int count)
+	{
+		assert count > 0;
+		return (pid+count) % C.playerCount;
+	}
+
+	int playerAfter(int pid)
+	{
+		return playerAfter(pid, 1);
+	}
+
+	void doEndOfAuction()
+	{
+		int winner = playerAfter(activePlayer);
+		for (int i = 1; i < C.playerCount; i++) {
+			int pid = playerAfter(activePlayer, 1+i);
+			if (seats[pid].bid > seats[winner].bid) {
+				winner = pid;
+			}
+		}
+		System.out.println("in end of auction");
+		System.out.printf("winning bid was %d (by %s)\n",
+			seats[winner].bid,
+			C.playerNames[winner]);
+
+		if (seats[winner].bid != PASSING_BID) {
+			seats[winner].addToBoat(current);
+			seats[winner].florins -= seats[winner].bid;
+		}
+
+		activePlayer = playerAfter(activePlayer);
+		nextAuction();
 	}
 
 	void shuffle(List<Card> deck)
