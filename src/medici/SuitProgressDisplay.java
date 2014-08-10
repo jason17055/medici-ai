@@ -17,6 +17,7 @@ class SuitProgressDisplay extends JPanel
 		this.suit = suit;
 
 		JLabel suitLbl = new JLabel(suit.toString());
+		suitLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		add(suitLbl, BorderLayout.NORTH);
 
 	}

@@ -15,6 +15,8 @@ public class MainWindow extends JFrame
 	JTextField bidEntry = new JTextField();
 	Map<Suit,SuitProgressDisplay> suitDisplays;
 
+	static final int GAP1 = 12;
+
 	public MainWindow()
 	{
 		super("Medici AI");
@@ -30,9 +32,13 @@ public class MainWindow extends JFrame
 		suitDisplays.put(Suit.FURS, new SuitProgressDisplay(Suit.FURS));
 
 		box0.add(suitDisplays.get(Suit.DYES));
+		box0.add(Box.createHorizontalStrut(GAP1));
 		box0.add(suitDisplays.get(Suit.CLOTH));
+		box0.add(Box.createHorizontalStrut(GAP1));
 		box0.add(suitDisplays.get(Suit.GRAIN));
+		box0.add(Box.createHorizontalStrut(GAP1));
 		box0.add(suitDisplays.get(Suit.SPICES));
+		box0.add(Box.createHorizontalStrut(GAP1));
 		box0.add(suitDisplays.get(Suit.FURS));
 
 		Box box1 = new Box(BoxLayout.Y_AXIS);
