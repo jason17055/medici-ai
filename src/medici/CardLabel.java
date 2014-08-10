@@ -34,6 +34,10 @@ class CardLabel extends JComponent
 	{
 		if (c == null) return;
 
+		gr.setColor(c.suit.color);
+		gr.fillRect(0, 0, getWidth(), getHeight());
+
+		gr.setColor(Color.BLACK);
 		gr.setFont(new Font("Arial", Font.PLAIN, 8));
 		String s = c.suit.name();
 		FontMetrics fm = gr.getFontMetrics();

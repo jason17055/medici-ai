@@ -22,13 +22,19 @@ class PlayerBoatDisplay extends JPanel
 		add(new JLabel(G.C.playerNames[seatNumber]), c1);
 
 		c1.gridy = 1;
-		add(new JLabel(String.format("$%d", seat.florins)), c1);
+		add(new JLabel(String.format("\u0192%d", seat.florins)), c1);
 
-		JPanel pnl = new JPanel(new GridBagLayout());
+		Box bx1 = new Box(BoxLayout.X_AXIS);
 		c1.gridx = 1;
 		c1.gridy = 0;
-		c1.gridheight = 2;
-		add(pnl, c1);
+		c1.gridheight = 1;
+		add(bx1, c1);
+
+		Box bx2 = new Box(BoxLayout.X_AXIS);
+		c1.gridy = 1;
+		add(bx2, c1);
+
+		bx1.add(Box.createHorizontalStrut(16));
 
 		for (int i = 0; i < seat.boat.length; i++) {
 
@@ -36,11 +42,9 @@ class PlayerBoatDisplay extends JPanel
 			CardLabel lbl = new CardLabel();
 			lbl.setCard(c);
 
-			c1.gridx = i < 2 ? (i*2+1) : (i*2-4);
-			c1.gridwidth = 2;
-			c1.gridy = i < 2 ? 0 : 1;
-			c1.gridheight = 1;
-			pnl.add(lbl, c1);
+			(i<2 ? bx1 : bx2).add(lbl);
 		}
+
+		bx1.add(Box.createHorizontalStrut(16));
 	}
 }
