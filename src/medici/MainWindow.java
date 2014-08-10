@@ -35,14 +35,13 @@ public class MainWindow extends JFrame
 		box0.add(suitDisplays.get(Suit.FURS));
 
 		Box box1 = new Box(BoxLayout.Y_AXIS);
-		box1.add(currentLotLbl);
 		box1.add(scoreLbl);
 		add(box1, BorderLayout.CENTER);
 
 		JPanel actionPane = new JPanel();
 		add(actionPane, BorderLayout.SOUTH);
 
-		actionPane.add(new JLabel("Enter Bid:"));
+		actionPane.add(currentLotLbl);
 		bidEntry.setPreferredSize(new Dimension(100,40));
 		bidEntry.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -91,7 +90,7 @@ public class MainWindow extends JFrame
 	void reloadGame()
 	{
 		currentLotLbl.setText(
-			String.format("Current: %s", G.getCurrentLot().toString())
+			String.format("Bid for %s:", G.getCurrentLot().toString())
 			);
 		scoreLbl.setText(
 			String.format("Your score: %d", G.seats[0].florins)
