@@ -31,6 +31,19 @@ public class MediciGame
 			"player4", "player5", "player6"
 			};
 
+		makeDeck();
+
+		seats = new Seat[C.playerCount];
+		for (int i = 0; i < C.playerCount; i++) {
+			seats[i] = new Seat();
+			seats[i].florins = 40;
+		}
+
+		nextAuction();
+	}
+
+	void makeDeck()
+	{
 		cardSupply = new ArrayList<Card>();
 		for (Suit suit : Suit.values())
 		{
@@ -51,14 +64,6 @@ public class MediciGame
 		assert cardSupply.size() == 36;
 
 		shuffle(cardSupply);
-
-		seats = new Seat[C.playerCount];
-		for (int i = 0; i < C.playerCount; i++) {
-			seats[i] = new Seat();
-			seats[i].florins = 40;
-		}
-
-		nextAuction();
 	}
 
 	void nextAuction()
@@ -197,7 +202,14 @@ public class MediciGame
 			public int get(int seatNumber) {
 				return seats[seatNumber].getLevel(suit);
 			}});
+
+			for (Seat s : seats) {
+				//TODO: give 10/20 bonuses
+			}
 		}
+
+		makeDeck();
+		nextAuction();
 	}
 
 	void shuffle(List<Card> deck)
