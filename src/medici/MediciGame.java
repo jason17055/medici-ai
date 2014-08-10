@@ -21,6 +21,11 @@ public class MediciGame
 		return current;
 	}
 
+	boolean canAutoPlay()
+	{
+		return C.bots[activeBidder] != null;
+	}
+
 	boolean autoPlay()
 	{
 System.out.printf("Auto Play: auctioneer %s bidder %s\n",
@@ -95,9 +100,20 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 		this.activeBidder = playerAfter(activePlayer);
 	}
 
+	int getCurrentBid()
+	{
+		int maxBid = Integer.MIN_VALUE;
+		for (Seat s : seats) {
+			if (s.bid != PASSING_BID && s.bid > maxBid) {
+				maxBid = s.bid;
+			}
+		}
+		return maxBid;
+	}
+
 	void makeBid(int bidAmount)
 	{
-		if (seats[activeBidder].canBid()) {
+		if (seats[activeBidder].canBid() && bidAmount > getCurrentBid()) {
 			seats[activeBidder].bid = bidAmount;
 		}
 		else {
@@ -140,6 +156,10 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 		if (seats[winner].bid != PASSING_BID) {
 			seats[winner].addToBoat(current);
 			seats[winner].florins -= seats[winner].bid;
+		}
+
+		for (Seat s : seats) {
+			s.bid = 0;
 		}
 
 		if (countPlayersLeft() == 1 || cardSupply.isEmpty()) {

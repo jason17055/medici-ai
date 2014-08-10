@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.Timer;
 
 public class MainWindow extends JFrame
 {
@@ -17,6 +18,7 @@ public class MainWindow extends JFrame
 	Map<Suit,SuitProgressDisplay> suitDisplays;
 
 	static final int GAP1 = 12;
+	static final int AUTO_PLAY_DELAY = 1200;
 
 	public MainWindow()
 	{
@@ -90,9 +92,28 @@ public class MainWindow extends JFrame
 
 		bidEntry.setText("");
 		bidEntry.requestFocusInWindow();
-
-		while (G.autoPlay());
 		reloadGame();
+
+		checkAutoPlay();
+	}
+
+	Timer autoTimer;
+	void checkAutoPlay()
+	{
+		if (autoTimer == null && G.canAutoPlay()) {
+
+			autoTimer = new Timer(AUTO_PLAY_DELAY,
+				new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+
+					autoTimer = null;
+					G.autoPlay();
+					reloadGame();
+					checkAutoPlay();
+				}});
+			autoTimer.setRepeats(false);
+			autoTimer.start();
+		}
 	}
 
 	public void setGame(MediciGame game)
@@ -137,5 +158,8 @@ public class MainWindow extends JFrame
 		for (SuitProgressDisplay spd : suitDisplays.values()) {
 			spd.reload();
 		}
+
+		repaint();
+		validate();
 	}
 }
