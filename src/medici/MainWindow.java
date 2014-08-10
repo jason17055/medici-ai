@@ -9,6 +9,7 @@ public class MainWindow extends JFrame
 {
 	MediciGame G;
 
+	Box playerBoatsContainer;
 	JLabel currentLotLbl = new JLabel();
 	JLabel yourBoatLbl = new JLabel();
 	JLabel scoreLbl = new JLabel();
@@ -21,8 +22,11 @@ public class MainWindow extends JFrame
 	{
 		super("Medici AI");
 
+		playerBoatsContainer = new Box(BoxLayout.X_AXIS);
+		add(playerBoatsContainer, BorderLayout.NORTH);
+
 		Box box0 = new Box(BoxLayout.X_AXIS);
-		add(box0, BorderLayout.NORTH);
+		add(box0, BorderLayout.CENTER);
 
 		suitDisplays = new EnumMap<Suit,SuitProgressDisplay>(Suit.class);
 		suitDisplays.put(Suit.DYES, new SuitProgressDisplay(Suit.DYES));
@@ -41,13 +45,16 @@ public class MainWindow extends JFrame
 		box0.add(Box.createHorizontalStrut(GAP1));
 		box0.add(suitDisplays.get(Suit.FURS));
 
+		JPanel p1 = new JPanel(new BorderLayout());
+		add(p1, BorderLayout.SOUTH);
+
 		Box box1 = new Box(BoxLayout.Y_AXIS);
 		box1.add(scoreLbl);
 		box1.add(yourBoatLbl);
-		add(box1, BorderLayout.CENTER);
+		p1.add(box1, BorderLayout.NORTH);
 
 		JPanel actionPane = new JPanel();
-		add(actionPane, BorderLayout.SOUTH);
+		p1.add(actionPane, BorderLayout.SOUTH);
 
 		actionPane.add(currentLotLbl);
 		bidEntry.setPreferredSize(new Dimension(100,40));
@@ -99,6 +106,12 @@ public class MainWindow extends JFrame
 
 	void reloadGame()
 	{
+		playerBoatsContainer.removeAll();
+		for (int pid = 1; pid < G.C.playerCount; pid++) {
+			PlayerBoatDisplay pbd = new PlayerBoatDisplay(G, pid);
+			playerBoatsContainer.add(pbd);
+		}
+
 		Seat mySeat = G.seats[0];
 
 		currentLotLbl.setText(
