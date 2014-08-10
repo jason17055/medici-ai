@@ -97,7 +97,12 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 
 	void makeBid(int bidAmount)
 	{
-		seats[activeBidder].bid = bidAmount;
+		if (seats[activeBidder].canBid()) {
+			seats[activeBidder].bid = bidAmount;
+		}
+		else {
+			seats[activeBidder].bid = PASSING_BID;
+		}
 
 		if (activeBidder == activePlayer) {
 			doEndOfAuction();
@@ -137,7 +142,7 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 			seats[winner].florins -= seats[winner].bid;
 		}
 
-		if (allBoatsFull()) {
+		if (countPlayersLeft() == 1 || cardSupply.isEmpty()) {
 			doEndOfRound();
 		}
 		else {
@@ -156,6 +161,17 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 			}
 		}
 		return true;
+	}
+
+	int countPlayersLeft()
+	{
+		int count = 0;
+		for (Seat s : seats) {
+			if (s.hasRoom()) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	interface ScoreMaker
@@ -207,8 +223,23 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 
 	void doEndOfRound()
 	{
-		int [] biggestBoat = new int[] { 30 };
-		rewardPlayersFor("Boat Total", biggestBoat, new ScoreMaker() {
+		// distribute remaining cards (if any)
+		for (int i = cardSupply.size()-1; i >= 0; i--) {
+			Card c = cardSupply.remove(i);
+			System.out.println("auto card draw is "+c);
+
+			for (int j = 0; j < C.playerCount; j++) {
+				int pid = (activePlayer+j) % C.playerCount;
+				if (seats[pid].hasRoom()) {
+					System.out.println("  goes to "+C.playerNames[pid]);
+					seats[pid].addToBoat(c);
+					break;
+				}
+			}
+		}
+
+		int [] biggestBoat_6p = new int[] { 30, 20, 15, 10, 5, 0 };
+		rewardPlayersFor("Boat Total", biggestBoat_6p, new ScoreMaker() {
 			public int get(int seatNumber) {
 				return seats[seatNumber].getBoatTotal();
 			}});

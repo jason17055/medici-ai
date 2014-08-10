@@ -35,11 +35,27 @@ public class Seat
 		}
 	}
 
+	boolean canBid()
+	{
+		return hasRoom();
+	}
+
 	void clearBoat()
 	{
 		for (int i = 0; i < boat.length; i++) {
 			boat[i] = null;
 		}
+	}
+
+	public int countInBoat()
+	{
+		int count = 0;
+		for (int i = 0; i < boat.length; i++) {
+			if (boat[i] != null) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	public int countInBoat(Suit s)
@@ -68,5 +84,10 @@ public class Seat
 	{
 		Integer x = levels.get(s);
 		return x != null ? x.intValue() : 0;
+	}
+
+	public boolean hasRoom()
+	{
+		return countInBoat() < boat.length;
 	}
 }
