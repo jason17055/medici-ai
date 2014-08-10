@@ -22,6 +22,26 @@ public class Seat
 		System.err.println("Warning: attempt to add to a full boat");
 	}
 
+	void adjustLevels()
+	{
+		for (int i = 0; i < boat.length; i++) {
+
+			Card c = boat[i];
+			if (c == null) { continue; }
+			if (c.suit == Suit.NO_SUIT) { continue; }
+
+			int newLevel = getLevel(c.suit) + 1;
+			levels.put(c.suit, newLevel);
+		}
+	}
+
+	void clearBoat()
+	{
+		for (int i = 0; i < boat.length; i++) {
+			boat[i] = null;
+		}
+	}
+
 	public int countInBoat(Suit s)
 	{
 		int count = 0;

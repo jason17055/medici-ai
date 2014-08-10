@@ -108,8 +108,96 @@ public class MediciGame
 			seats[winner].florins -= seats[winner].bid;
 		}
 
-		activePlayer = playerAfter(activePlayer);
-		nextAuction();
+		if (allBoatsFull()) {
+			doEndOfRound();
+		}
+		else {
+			activePlayer = playerAfter(activePlayer);
+			nextAuction();
+		}
+	}
+
+	boolean allBoatsFull()
+	{
+		for (Seat s : seats) {
+			for (int i = 0; i < s.boat.length; i++) {
+				if (s.boat[i] == null) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	interface ScoreMaker
+	{
+		int get(int seatNumber);
+	}
+
+	void rewardPlayersFor(String rewardType, int [] rewards, ScoreMaker scorer)
+	{
+		final int [] scores = new int[C.playerCount];
+		for (int i = 0; i < scores.length; i++) {
+			scores[i] = scorer.get(i);
+		}
+
+		Integer [] order = new Integer[C.playerCount];
+		for (int i = 0; i < order.length; i++) {
+			order[i] = i;
+		}
+		Arrays.sort(order, new Comparator<Integer>() {
+			public int compare(Integer A, Integer B) {
+				int a = A.intValue(), b = B.intValue();
+				int a_t = scores[a];
+				int b_t = scores[b];
+				return -(a_t>b_t ? 1 : a_t<b_t ? -1 : 0);
+			}
+			});
+
+		for (int i = 0; i < order.length; ) {
+			int sum = 0;
+			int j = i;
+			while (j < order.length && scores[order[j]] == scores[order[i]]) {
+				sum += (j < rewards.length ? rewards[j] : 0);
+				j++;
+			}
+
+			assert j > i;
+
+			for (int k = i; k < j; k++) {
+				System.out.printf("%s: %d points for %s\n",
+					rewardType,
+					sum / (j-i),
+					C.playerNames[order[k]]
+					);
+				seats[order[k]].florins += sum / (j-i);
+			}
+			i = j;
+		}
+	}
+
+	void doEndOfRound()
+	{
+		int [] biggestBoat = new int[] { 30 };
+		rewardPlayersFor("Boat Total", biggestBoat, new ScoreMaker() {
+			public int get(int seatNumber) {
+				return seats[seatNumber].getBoatTotal();
+			}});
+
+		for (Seat s : seats) {
+			s.adjustLevels();
+			s.clearBoat();
+		}
+
+		for (final Suit suit : Suit.values()) {
+			if (suit == Suit.NO_SUIT) { continue; }
+
+			int [] bestInSuit = new int[] { 10, 5 };
+			rewardPlayersFor(suit.name(), bestInSuit, new ScoreMaker() {
+			public int get(int seatNumber) {
+				return seats[seatNumber].getLevel(suit);
+			}});
+		}
 	}
 
 	void shuffle(List<Card> deck)
