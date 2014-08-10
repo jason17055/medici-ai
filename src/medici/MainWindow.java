@@ -83,6 +83,8 @@ public class MainWindow extends JFrame
 
 		bidEntry.setText("");
 		bidEntry.requestFocusInWindow();
+
+		while (G.autoPlay());
 		reloadGame();
 	}
 

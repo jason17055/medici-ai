@@ -7,4 +7,5 @@ public class GameConfig
 	Random R;
 	int playerCount;
 	String [] playerNames;
+	Bot [] bots;
 }

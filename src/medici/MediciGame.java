@@ -21,15 +21,38 @@ public class MediciGame
 		return current;
 	}
 
+	boolean autoPlay()
+	{
+System.out.printf("Auto Play: auctioneer %s bidder %s\n",
+	C.playerNames[activePlayer],
+	C.playerNames[activeBidder]);
+
+		Bot bot = C.bots[activeBidder];
+		if (bot != null) {
+			int bid = bot.requestBid();
+			makeBid(bid);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	void initialize(long seed)
 	{
 		C = new GameConfig();
 		C.R = new Random(seed);
-		C.playerCount = 1;
+		C.playerCount = 6;
 		C.playerNames = new String[] {
 			"player1", "player2", "player3",
 			"player4", "player5", "player6"
 			};
+		C.bots = new Bot[6];
+		C.bots[1] = new Bot(this, 1);
+		C.bots[2] = new Bot(this, 2);
+		C.bots[3] = new Bot(this, 3);
+		C.bots[4] = new Bot(this, 4);
+		C.bots[5] = new Bot(this, 5);
 
 		makeDeck();
 
@@ -69,6 +92,7 @@ public class MediciGame
 	void nextAuction()
 	{
 		this.current = cardSupply.remove(cardSupply.size()-1);
+		this.activeBidder = playerAfter(activePlayer);
 	}
 
 	void makeBid(int bidAmount)

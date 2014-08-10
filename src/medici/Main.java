@@ -6,6 +6,7 @@ public class Main
 	{
 		MediciGame g = new MediciGame();
 		g.initialize(0);
+		while (g.autoPlay());
 
 		MainWindow w = new MainWindow();
 		w.setGame(g);
