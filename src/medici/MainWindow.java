@@ -71,7 +71,7 @@ public class MainWindow extends JFrame
 			}});
 		actionPane.add(b1);
 
-		setPreferredSize(new Dimension(640,480));
+		setPreferredSize(new Dimension(800,480));
 		pack();
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -109,6 +109,7 @@ public class MainWindow extends JFrame
 		playerBoatsContainer.removeAll();
 		for (int pid = 1; pid < G.C.playerCount; pid++) {
 			PlayerBoatDisplay pbd = new PlayerBoatDisplay(G, pid);
+			pbd.setBorder(BorderFactory.createTitledBorder(G.C.playerNames[pid]));
 			playerBoatsContainer.add(pbd);
 		}
 

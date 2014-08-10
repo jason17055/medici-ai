@@ -24,22 +24,23 @@ class PlayerBoatDisplay extends JPanel
 		c1.gridy = 1;
 		add(new JLabel(String.format("$%d", seat.florins)), c1);
 
+		JPanel pnl = new JPanel(new GridBagLayout());
+		c1.gridx = 1;
+		c1.gridy = 0;
+		c1.gridheight = 2;
+		add(pnl, c1);
+
 		for (int i = 0; i < seat.boat.length; i++) {
+
 			Card c = seat.boat[i];
+			CardLabel lbl = new CardLabel();
+			lbl.setCard(c);
 
-			JLabel goodsLbl = new JLabel();
-			goodsLbl.setHorizontalAlignment(SwingConstants.CENTER);
-			goodsLbl.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-			if (c != null) {
-				goodsLbl.setText(String.format("<html>%s<br>%d",
-					c.suit.name(),
-					c.value));
-			}
-
-			c1.gridx = i+1;
-			c1.gridy = 0;
-			c1.gridheight = 2;
-			add(goodsLbl, c1);
+			c1.gridx = i < 2 ? (i*2+1) : (i*2-4);
+			c1.gridwidth = 2;
+			c1.gridy = i < 2 ? 0 : 1;
+			c1.gridheight = 1;
+			pnl.add(lbl, c1);
 		}
 	}
 }
