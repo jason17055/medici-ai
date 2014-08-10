@@ -22,7 +22,7 @@ public class Seat
 		System.err.println("Warning: attempt to add to a full boat");
 	}
 
-	int countInBoat(Suit s)
+	public int countInBoat(Suit s)
 	{
 		int count = 0;
 		for (int i = 0; i < boat.length; i++) {
@@ -33,7 +33,18 @@ public class Seat
 		return count;
 	}
 
-	int getLevel(Suit s)
+	public int getBoatTotal()
+	{
+		int sum = 0;
+		for (int i = 0; i < boat.length; i++) {
+			if (boat[i] != null) {
+				sum += boat[i].value;
+			}
+		}
+		return sum;
+	}
+
+	public int getLevel(Suit s)
 	{
 		Integer x = levels.get(s);
 		return x != null ? x.intValue() : 0;

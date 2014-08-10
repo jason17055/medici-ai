@@ -10,6 +10,7 @@ public class MainWindow extends JFrame
 	MediciGame G;
 
 	JLabel currentLotLbl = new JLabel();
+	JLabel yourBoatLbl = new JLabel();
 	JLabel scoreLbl = new JLabel();
 	JTextField bidEntry = new JTextField();
 	Map<Suit,SuitProgressDisplay> suitDisplays;
@@ -36,6 +37,7 @@ public class MainWindow extends JFrame
 
 		Box box1 = new Box(BoxLayout.Y_AXIS);
 		box1.add(scoreLbl);
+		box1.add(yourBoatLbl);
 		add(box1, BorderLayout.CENTER);
 
 		JPanel actionPane = new JPanel();
@@ -89,12 +91,26 @@ public class MainWindow extends JFrame
 
 	void reloadGame()
 	{
+		Seat mySeat = G.seats[0];
+
 		currentLotLbl.setText(
 			String.format("Bid for %s:", G.getCurrentLot().toString())
 			);
 		scoreLbl.setText(
-			String.format("Your score: %d", G.seats[0].florins)
+			String.format("Your score: %d", mySeat.florins)
 			);
+
+		String inBoat = "";
+		for (int i = 0; i < mySeat.boat.length; i++) {
+			if (mySeat.boat[i] == null) { continue; }
+			if (i != 0) { inBoat += ", "; }
+			inBoat += mySeat.boat[i].toString();
+		}
+		yourBoatLbl.setText(
+			String.format("Your boat: %s (TOTAL=%d)",
+				inBoat,
+				mySeat.getBoatTotal()
+			));
 
 		for (SuitProgressDisplay spd : suitDisplays.values()) {
 			spd.reload();
