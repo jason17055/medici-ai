@@ -2,6 +2,7 @@ package medici;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
 
 public class MainWindow extends JFrame
@@ -11,10 +12,27 @@ public class MainWindow extends JFrame
 	JLabel currentLotLbl = new JLabel();
 	JLabel scoreLbl = new JLabel();
 	JTextField bidEntry = new JTextField();
+	Map<Suit,SuitProgressDisplay> suitDisplays;
 
 	public MainWindow()
 	{
 		super("Medici AI");
+
+		Box box0 = new Box(BoxLayout.X_AXIS);
+		add(box0, BorderLayout.NORTH);
+
+		suitDisplays = new EnumMap<Suit,SuitProgressDisplay>(Suit.class);
+		suitDisplays.put(Suit.DYES, new SuitProgressDisplay(Suit.DYES));
+		suitDisplays.put(Suit.CLOTH, new SuitProgressDisplay(Suit.CLOTH));
+		suitDisplays.put(Suit.GRAIN, new SuitProgressDisplay(Suit.GRAIN));
+		suitDisplays.put(Suit.SPICES, new SuitProgressDisplay(Suit.SPICES));
+		suitDisplays.put(Suit.FURS, new SuitProgressDisplay(Suit.FURS));
+
+		box0.add(suitDisplays.get(Suit.DYES));
+		box0.add(suitDisplays.get(Suit.CLOTH));
+		box0.add(suitDisplays.get(Suit.GRAIN));
+		box0.add(suitDisplays.get(Suit.SPICES));
+		box0.add(suitDisplays.get(Suit.FURS));
 
 		Box box1 = new Box(BoxLayout.Y_AXIS);
 		box1.add(currentLotLbl);
@@ -64,6 +82,9 @@ public class MainWindow extends JFrame
 	public void setGame(MediciGame game)
 	{
 		this.G = game;
+		for (SuitProgressDisplay spd : suitDisplays.values()) {
+			spd.G = game;
+		}
 		reloadGame();
 	}
 
@@ -75,5 +96,9 @@ public class MainWindow extends JFrame
 		scoreLbl.setText(
 			String.format("Your score: %d", G.seats[0].florins)
 			);
+
+		for (SuitProgressDisplay spd : suitDisplays.values()) {
+			spd.reload();
+		}
 	}
 }
