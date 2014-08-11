@@ -10,6 +10,7 @@ public class MainWindow extends JFrame
 {
 	MediciGame G;
 
+	JButton bidBtn;
 	Box playerBoatsContainer;
 	JLabel currentLotLbl = new JLabel();
 	JLabel yourBoatLbl = new JLabel();
@@ -66,12 +67,12 @@ public class MainWindow extends JFrame
 			}});
 		actionPane.add(bidEntry);
 
-		JButton b1 = new JButton("Bid");
-		b1.addActionListener(new ActionListener() {
+		bidBtn = new JButton("Bid");
+		bidBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				onBidClicked();
 			}});
-		actionPane.add(b1);
+		actionPane.add(bidBtn);
 
 		setPreferredSize(new Dimension(800,480));
 		pack();
@@ -157,6 +158,12 @@ public class MainWindow extends JFrame
 
 		for (SuitProgressDisplay spd : suitDisplays.values()) {
 			spd.reload();
+		}
+
+		bidEntry.setEnabled(G.activeBidder == 0);
+		bidBtn.setEnabled(G.activeBidder == 0);
+		if (G.activeBidder == 0) {
+			bidEntry.requestFocusInWindow();
 		}
 
 		repaint();
