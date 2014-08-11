@@ -137,8 +137,11 @@ public class MainWindow extends JFrame
 
 		Seat mySeat = G.seats[0];
 
+		Card c = G.getCurrentLot();
 		currentLotLbl.setText(
-			String.format("Bid for %s:", G.getCurrentLot().toString())
+			c != null ?
+			String.format("Bid for %s:", c.toString()) :
+			null
 			);
 		scoreLbl.setText(
 			String.format("Your score: %d", mySeat.florins)
