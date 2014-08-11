@@ -18,7 +18,7 @@ public class MainWindow extends JFrame
 	Map<Suit,SuitProgressDisplay> suitDisplays;
 
 	static final int GAP1 = 12;
-	static final int AUTO_PLAY_DELAY = 1200;
+	static final int AUTO_PLAY_DELAY = 300;
 
 	public MainWindow()
 	{

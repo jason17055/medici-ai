@@ -5,15 +5,39 @@ import java.util.*;
 public class MediciGame
 {
 	GameConfig C;
-	List<Card> cardSupply;
+	ArrayList<Card> cardSupply;
 	Seat[] seats;
 	Card current;
 	int activePlayer;
 	int activeBidder;
+	int roundNumber;
 
 	static final int PASSING_BID = Integer.MIN_VALUE;
 	public MediciGame()
 	{
+	}
+
+	void message(String s)
+	{
+		//TODO
+	}
+
+	public MediciGame cloneForMonteCarlo()
+	{
+		MediciGame g = new MediciGame();
+		g.C = this.C;
+		g.cardSupply = new ArrayList<Card>();
+		g.cardSupply.addAll(this.cardSupply);
+		shuffle(g.cardSupply);
+		g.seats = new Seat[C.playerCount];
+		for (int i = 0; i < g.seats.length; i++) {
+			g.seats[i] = this.seats[i].clone();
+		}
+		g.current = this.current;
+		g.activePlayer = this.activePlayer;
+		g.activeBidder = this.activeBidder;
+		g.roundNumber = this.roundNumber;
+		return g;
 	}
 
 	Card getCurrentLot()
@@ -43,6 +67,11 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 		}
 	}
 
+	public boolean endOfGame()
+	{
+		return this.roundNumber == 3;
+	}
+
 	void initialize(long seed)
 	{
 		C = new GameConfig();
@@ -53,7 +82,7 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 			"player4", "player5", "player6"
 			};
 		C.bots = new Bot[6];
-		C.bots[1] = new Bot(this, 1);
+		C.bots[1] = new Bot1(this, 1);
 		C.bots[2] = new Bot(this, 2);
 		C.bots[3] = new Bot(this, 3);
 		C.bots[4] = new Bot(this, 4);
@@ -102,13 +131,18 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 
 	int getCurrentBid()
 	{
-		int maxBid = Integer.MIN_VALUE;
+		int maxBid = 0;
 		for (Seat s : seats) {
 			if (s.bid != PASSING_BID && s.bid > maxBid) {
 				maxBid = s.bid;
 			}
 		}
 		return maxBid;
+	}
+
+	void defaultPlay()
+	{
+		makeBid(1);
 	}
 
 	void makeBid(int bidAmount)
@@ -148,16 +182,19 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 				winner = pid;
 			}
 		}
-		System.out.println("in end of auction");
-		System.out.printf("winning bid was %d (by %s)\n",
+
+		message(String.format(
+			"winning bid was %d (by %s)\n",
 			seats[winner].bid,
-			C.playerNames[winner]);
+			C.playerNames[winner])
+			);
 
 		if (seats[winner].bid != PASSING_BID) {
 			seats[winner].addToBoat(current);
 			seats[winner].florins -= seats[winner].bid;
 		}
 
+		current = null;
 		for (Seat s : seats) {
 			s.bid = 0;
 		}
@@ -230,11 +267,11 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 			assert j > i;
 
 			for (int k = i; k < j; k++) {
-				System.out.printf("%s: %d points for %s\n",
+				message(String.format("%s: %d points for %s\n",
 					rewardType,
 					sum / (j-i),
 					C.playerNames[order[k]]
-					);
+					));
 				seats[order[k]].florins += sum / (j-i);
 			}
 			i = j;
@@ -246,12 +283,14 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 		// distribute remaining cards (if any)
 		for (int i = cardSupply.size()-1; i >= 0; i--) {
 			Card c = cardSupply.remove(i);
-			System.out.println("auto card draw is "+c);
 
 			for (int j = 0; j < C.playerCount; j++) {
 				int pid = (activePlayer+j) % C.playerCount;
 				if (seats[pid].hasRoom()) {
-					System.out.println("  goes to "+C.playerNames[pid]);
+
+					message(String.format("%s goes to %s for free",
+						c.toString(),
+						C.playerNames[pid]));
 					seats[pid].addToBoat(c);
 					break;
 				}
@@ -283,8 +322,11 @@ System.out.printf("Auto Play: auctioneer %s bidder %s\n",
 			}
 		}
 
-		makeDeck();
-		nextAuction();
+		this.roundNumber++;
+		if (!endOfGame()) {
+			makeDeck();
+			nextAuction();
+		}
 	}
 
 	void shuffle(List<Card> deck)

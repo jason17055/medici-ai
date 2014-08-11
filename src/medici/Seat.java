@@ -8,7 +8,18 @@ public class Seat
 	int bid;
 
 	Card [] boat = new Card[5];
-	Map<Suit,Integer> levels = new EnumMap<Suit,Integer>(Suit.class);
+	EnumMap<Suit,Integer> levels = new EnumMap<Suit,Integer>(Suit.class);
+
+	@Override
+	public Seat clone()
+	{
+		Seat obj = new Seat();
+		obj.florins = this.florins;
+		obj.bid = this.bid;
+		obj.boat = this.boat.clone();
+		obj.levels = this.levels.clone();
+		return obj;
+	}
 
 	void addToBoat(Card c)
 	{
