@@ -1,5 +1,7 @@
 package dragonfin;
 
+import java.util.Arrays;
+
 class Node
 {
 	double outputValue;
@@ -38,10 +40,23 @@ class Node
 			baseWeights[i] = 2*(Math.random()-0.5);
 		}
 	}
+
+	void addRandomEdgeTo(Node aNode)
+	{
+		int len = baseNodes.length;
+		baseNodes = Arrays.copyOf(baseNodes, len+1);
+		baseNodes[len] = aNode;
+		baseWeights = Arrays.copyOf(baseWeights, len+1);
+		baseWeights[len] = 2*(Math.random()-0.5);
+	}
 }
 
 class OutputNode extends Node
 {
 	double activationFunction(double x) { return x; }
 	double activationDerivative(double x) { return 1.0; }
+}
+
+class BiasNode extends Node
+{
 }

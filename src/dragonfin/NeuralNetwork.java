@@ -15,30 +15,34 @@ public class NeuralNetwork
 	public static NeuralNetwork create(int a, int b, int c)
 	{
 		NeuralNetwork nn = new NeuralNetwork();
-		nn.inputNodes = new InputNode[a+1];
+		nn.inputNodes = new InputNode[a];
 		for (int i = 0; i < a; i++) {
 			nn.inputNodes[i] = new InputNode();
 		}
-		nn.inputNodes[a] = new InputNode();
-		nn.inputNodes[a].outputValue = 1.0;
+
+		BiasNode bnode = new BiasNode();
+		bnode.outputValue = 1.0;
 
 		nn.middleNodes = new Node[b];
 		for (int i = 0; i < b; i++) {
 			nn.middleNodes[i] = new Node();
 			nn.middleNodes[i].createRandomEdgesTo(nn.inputNodes);
+			nn.middleNodes[i].addRandomEdgeTo(bnode);
 		}
 
 		nn.outputNodes = new OutputNode[c];
 		for (int i = 0; i < c; i++) {
 			nn.outputNodes[i] = new OutputNode();
 			nn.outputNodes[i].createRandomEdgesTo(nn.middleNodes);
+			nn.outputNodes[i].addRandomEdgeTo(bnode);
 		}
 		return nn;
 	}
 
 	public double[] evaluate(double [] inputValues)
 	{
-		assert inputNodes.length == inputValues.length + 1;
+		assert inputNodes.length == inputValues.length;
+
 		for (int i = 0; i < inputValues.length; i++) {
 			inputNodes[i].outputValue = inputValues[i];
 		}
