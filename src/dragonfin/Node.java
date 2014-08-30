@@ -22,13 +22,13 @@ class Node
 
 	double activationFunction(double x)
 	{
-		return 1.0/(1 + Math.exp(-x));
+		double e2x = Math.exp(-2*x);
+		return (1-e2x)/(1+e2x);
 	}
 
 	double activationDerivative(double x)
 	{
-		double tmp = activationFunction(x);
-		return tmp * (1-tmp);
+		return 1.0-Math.pow(activationFunction(x), 2.0);
 	}
 
 	void createRandomEdgesTo(Node [] nodeList)
